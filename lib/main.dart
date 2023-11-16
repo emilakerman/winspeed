@@ -13,7 +13,7 @@ class MyApp extends StatefulWidget {
   MyApp({super.key, required this.listOfStrings});
   List<String> listOfStrings = ['1'];
 
-  //Only for microsoft programs
+  // Only for microsoft programs
   void uninstallProgram(String programName) {
     Process.run('msiexec', ['/uninstall', programName])
         .then((ProcessResult result) {
@@ -40,6 +40,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     DisableCortana disableCortana = DisableCortana();
+
     // THIS ONE WORKS as of 2023-11-13 but not silent uninstall
     Future<void> uninstallProgramNotMSI2(List<String> uninstallList) async {
       try {
@@ -51,23 +52,30 @@ class _MyAppState extends State<MyApp> {
           );
           print("$item uninstalled!!!");
         }
-
-        // print('Exit code: ${result.exitCode}');
-        // print('stdout: ${result.stdout}');
-        // print('stderr: ${result.stderr}');
       } catch (e) {
         print('Error: $e');
       }
     }
 
+    void removeInitialString() {
+      widget.listOfStrings.remove('Nothing done yet!');
+    }
+
     return MaterialApp(
       home: Scaffold(
         backgroundColor: const Color.fromARGB(112, 70, 68, 68),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Center(
-              child: ElevatedButton(
+        body: LayoutBuilder(
+          builder: (context, constraints) => Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const SizedBox(height: 30),
+              const Text(
+                "WINSPEED DEBLOATER",
+                style: TextStyle(fontSize: 30, color: Colors.white),
+              ),
+              const SizedBox(height: 30),
+              Center(
+                child: ElevatedButton(
                   child: const Text("Uninstall Program"),
                   onPressed: () {
                     uninstallProgramNotMSI2(
@@ -75,36 +83,56 @@ class _MyAppState extends State<MyApp> {
                     );
                     setState(() {
                       widget.listOfStrings.add('programs uninstalled');
+                      removeInitialString();
                     });
-                  }),
-            ),
-            const SizedBox(height: 50),
-            ElevatedButton(
-              onPressed: () {
-                disableCortana.main();
-                setState(() {
-                  widget.listOfStrings.add('cortana disabled');
-                });
-              },
-              child: const Text("Disable cortana"),
-            ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: widget.listOfStrings?.length,
-                itemBuilder: (context, index) {
-                  final item = widget.listOfStrings?[index];
-                  return ListTile(
-                    title: Text(
-                      "$item",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  );
-                },
+                  },
+                ),
               ),
-            ),
-          ],
+              const SizedBox(height: 30),
+              ElevatedButton(
+                onPressed: () {
+                  disableCortana.main();
+                  setState(() {
+                    widget.listOfStrings.add('cortana disabled');
+                    removeInitialString();
+                  });
+                },
+                child: const Text("Disable cortana"),
+              ),
+              Expanded(
+                child: ActionList(listOfStrings: widget.listOfStrings),
+              ),
+            ],
+          ),
         ),
       ),
+    );
+  }
+}
+
+class ActionList extends StatefulWidget {
+  final List<String> listOfStrings;
+  const ActionList({super.key, required this.listOfStrings});
+
+  @override
+  State<ActionList> createState() => _ActionListState();
+}
+
+class _ActionListState extends State<ActionList> {
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: widget.listOfStrings.length,
+      itemBuilder: (context, index) {
+        final item = widget.listOfStrings[index];
+        return ListTile(
+          title: Text(
+            item,
+            style: const TextStyle(color: Colors.white),
+            textAlign: TextAlign.center,
+          ),
+        );
+      },
     );
   }
 }
