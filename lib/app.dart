@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:winspeed/common_widgets/action_list.dart';
 import 'package:winspeed/disable_cortana.dart';
 import 'package:winspeed/enums/window_size_enum.dart';
+import 'package:winspeed/theme.dart';
 import 'package:winspeed/uninstall_list.dart';
 import 'package:winspeed/utils/resize_window.dart';
 
@@ -51,6 +52,7 @@ class _MyAppConsumerState extends ConsumerState<MyApp> {
     }
 
     return MaterialApp(
+      theme: AppTheme.themeData,
       home: Scaffold(
         backgroundColor: const Color.fromARGB(112, 70, 68, 68),
         body: LayoutBuilder(
