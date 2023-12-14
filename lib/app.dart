@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:winspeed/clear_bin.dart';
 import 'package:winspeed/common_widgets/action_list.dart';
 import 'package:winspeed/disable_cortana.dart';
 import 'package:winspeed/enums/window_size_enum.dart';
@@ -30,6 +31,7 @@ class _MyAppConsumerState extends ConsumerState<MyApp> {
   @override
   Widget build(BuildContext context) {
     DisableCortana disableCortana = DisableCortana();
+    ClearBin clearBin = ClearBin();
 
     // THIS ONE WORKS as of 2023-11-13
     Future<void> uninstallProgramNotMSI2(List<String> uninstallList) async {
@@ -89,6 +91,17 @@ class _MyAppConsumerState extends ConsumerState<MyApp> {
                   });
                 },
                 child: const Text("Disable cortana"),
+              ),
+              const SizedBox(height: 30),
+              ElevatedButton(
+                onPressed: () {
+                  clearBin.main();
+                  setState(() {
+                    actionsList.add('bin cleared');
+                    removeInitialString();
+                  });
+                },
+                child: const Text("Clear bin"),
               ),
               Expanded(
                 child: ActionList(listOfStrings: actionsList),
